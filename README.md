@@ -54,4 +54,4 @@ See our [directory](DIRECTORY.md) for easier navigation and a better overview of
 ## ✍️ Contributor Signature
 
 - **felipeofdev** — felipe.of.dev@gmail.com (local contribution branch)
-- See [CONTRIBUTOR_SIGNATURES.md](CONTRIBUTOR_SIGNATURES.md) for the recorded signature entry.
+- See [CONTRIBUTOR_SIGNATURES.md](CONTRIBUTOR_SIGNATURES.md) for the recorded signature entry. 
