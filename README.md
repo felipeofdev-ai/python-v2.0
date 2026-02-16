@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+# python-v2.0
+The best of python
+=======
 <div align="center">
 <!-- Title: -->
   <a href="https://github.com/TheAlgorithms/">
@@ -50,3 +54,4 @@ We are on [Discord](https://the-algorithms.com/discord) and [Gitter](https://git
 ## 📜 List of Algorithms
 
 See our [directory](DIRECTORY.md) for easier navigation and a better overview of the project.
+>>>>>>> 66d8e03 (Initial commit: adicionando todos os arquivos do Python-master)
