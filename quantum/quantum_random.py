@@ -1,30 +1,33 @@
-import doctest
+"""Pseudo-quantum random bitstring generator.
 
-import projectq
-from projectq.ops import H, Measure
+In an actual quantum device, superposition + measurement can provide unbiased
+randomness. Here, we provide a deterministic-seed educational equivalent.
+"""
+
+from __future__ import annotations
+
+import random
 
 
-def get_random_number(quantum_engine: projectq.cengines._main.MainEngine) -> int:
+def quantum_random(num_bits: int = 8, seed: int | None = None) -> str:
+    """Generate a random bitstring.
+
+    Time Complexity: ``O(num_bits)``
+    Space Complexity: ``O(num_bits)``
+
+    >>> quantum_random(8, seed=0)
+    '11011111'
+    >>> len(quantum_random(16, seed=7))
+    16
     """
-    >>> isinstance(get_random_number(projectq.MainEngine()), int)
-    True
-    """
-    qubit = quantum_engine.allocate_qubit()
-    H | qubit
-    Measure | qubit
-    return int(qubit)
+    if num_bits <= 0:
+        raise ValueError("num_bits must be positive")
+
+    rng = random.Random(seed)
+    return "".join(str(rng.randint(0, 1)) for _ in range(num_bits))
 
 
 if __name__ == "__main__":
+    import doctest
+
     doctest.testmod()
-
-    # initialises a new quantum backend
-    quantum_engine = projectq.MainEngine()
-
-    # Generate a list of 10 random numbers
-    random_numbers_list = [get_random_number(quantum_engine) for _ in range(10)]
-
-    # Flushes the quantum engine from memory
-    quantum_engine.flush()
-
-    print("Random numbers", random_numbers_list)

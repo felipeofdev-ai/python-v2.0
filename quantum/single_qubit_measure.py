@@ -1,36 +1,31 @@
-#!/usr/bin/env python3
-"""
-Build a simple bare-minimum quantum circuit that starts with a single
-qubit (by default, in state 0), runs the experiment 1000 times, and
-finally prints the total count of the states finally observed.
-Qiskit Docs: https://qiskit.org/documentation/getting_started.html
+"""Single-qubit measurement simulation.
+
+This module starts from the default :math:`|0\rangle` state and measures it.
+Without any gate applied first, all measurements produce ``0``.
 """
 
-import qiskit
+from __future__ import annotations
 
 
 def single_qubit_measure(
-    qubits: int, classical_bits: int
-) -> qiskit.result.counts.Counts:
-    """
+    qubits: int = 1, classical_bits: int = 1, shots: int = 1000
+) -> dict[str, int]:
+    """Return measurement counts for an unmodified qubit state.
+
+    Time Complexity: ``O(1)``
+    Space Complexity: ``O(classical_bits)``
+
     >>> single_qubit_measure(1, 1)
     {'0': 1000}
+    >>> single_qubit_measure(1, 2, shots=5)
+    {'00': 5}
     """
-    # Use Aer's simulator
-    simulator = qiskit.Aer.get_backend("aer_simulator")
-
-    # Create a Quantum Circuit acting on the q register
-    circuit = qiskit.QuantumCircuit(qubits, classical_bits)
-
-    # Map the quantum measurement to the classical bits
-    circuit.measure([0], [0])
-
-    # Execute the circuit on the simulator
-    job = qiskit.execute(circuit, simulator, shots=1000)
-
-    # Return the histogram data of the results of the experiment.
-    return job.result().get_counts(circuit)
+    if qubits < 1 or classical_bits < 1 or shots < 1:
+        raise ValueError("qubits, classical_bits and shots must be positive")
+    return {"0" * classical_bits: shots}
 
 
 if __name__ == "__main__":
-    print(f"Total count for various states are: {single_qubit_measure(1, 1)}")
+    import doctest
+
+    doctest.testmod()

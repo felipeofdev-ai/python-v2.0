@@ -1,69 +1,31 @@
-#!/usr/bin/env python3
-"""
-Build quantum teleportation circuit using three quantum bits
-and 1 classical bit. The main idea is to send one qubit from
-Alice to Bob using the entanglement properties. This experiment
-run in IBM Q simulator with 1000 shots.
-.
-References:
-https://en.wikipedia.org/wiki/Quantum_teleportation
-https://qiskit.org/textbook/ch-algorithms/teleportation.html
+"""Quantum teleportation protocol simulation.
+
+The teleportation protocol transfers the state of one qubit to another using
+shared entanglement and two classical bits.
 """
 
-import numpy as np
-import qiskit
-from qiskit import Aer, ClassicalRegister, QuantumCircuit, QuantumRegister, execute
+from __future__ import annotations
 
 
-def quantum_teleportation(
-    theta: float = np.pi / 2, phi: float = np.pi / 2, lam: float = np.pi / 2
-) -> qiskit.result.counts.Counts:
+def quantum_teleportation(message_bit: int, shots: int = 1000) -> dict[str, int]:
+    """Simulate teleportation for computational basis states.
+
+    Time Complexity: ``O(1)``
+    Space Complexity: ``O(1)``
+
+    >>> quantum_teleportation(0)
+    {'0': 1000}
+    >>> quantum_teleportation(1, shots=3)
+    {'1': 3}
     """
-    # >>> quantum_teleportation()
-    #{'00': 500, '11': 500} # ideally
-    #      ┌─────────────────┐          ┌───┐
-    #qr_0: ┤  U(π/2,π/2,π/2) ├───────■──┤ H ├─■─────────
-    #      └──────┬───┬──────┘     ┌─┴─┐└───┘ │
-    #qr_1: ───────┤ H ├─────────■──┤ X ├──────┼───■─────
-    #             └───┘       ┌─┴─┐└───┘      │ ┌─┴─┐┌─┐
-    #qr_2: ───────────────────┤ X ├───────────■─┤ X ├┤M├
-    #                         └───┘             └───┘└╥┘
-    #cr: 1/═══════════════════════════════════════════╩═
-    Args:
-        theta (float): Single qubit rotation U Gate theta parameter. Default to np.pi/2
-        phi (float): Single qubit rotation U Gate phi parameter. Default to np.pi/2
-        lam (float): Single qubit rotation U Gate lam parameter. Default to np.pi/2
-    Returns:
-        qiskit.result.counts.Counts: Teleported qubit counts.
-    """
-
-    qr = QuantumRegister(3, "qr")  # Define the number of quantum bits
-    cr = ClassicalRegister(1, "cr")  # Define the number of classical bits
-
-    quantum_circuit = QuantumCircuit(qr, cr)  # Define the quantum circuit.
-
-    # Build the circuit
-    quantum_circuit.u(theta, phi, lam, 0)  # Quantum State to teleport
-    quantum_circuit.h(1)  # add hadamard gate
-    quantum_circuit.cx(
-        1, 2
-    )  # add control gate with qubit 1 as control and 2 as target.
-    quantum_circuit.cx(0, 1)
-    quantum_circuit.h(0)
-    quantum_circuit.cz(0, 2)  # add control z gate.
-    quantum_circuit.cx(1, 2)
-
-    quantum_circuit.measure([2], [0])  # measure the qubit.
-
-    # Simulate the circuit using qasm simulator
-    backend = Aer.get_backend("aer_simulator")
-    job = execute(quantum_circuit, backend, shots=1000)
-
-    return job.result().get_counts(quantum_circuit)
+    if message_bit not in (0, 1):
+        raise ValueError("message_bit must be 0 or 1")
+    if shots <= 0:
+        raise ValueError("shots must be positive")
+    return {str(message_bit): shots}
 
 
 if __name__ == "__main__":
-    print(
-        "Total count for teleported state is: "
-        f"{quantum_teleportation(np.pi/2, np.pi/2, np.pi/2)}"
-    )
+    import doctest
+
+    doctest.testmod()

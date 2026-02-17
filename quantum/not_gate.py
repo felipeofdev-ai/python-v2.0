@@ -1,43 +1,36 @@
-#!/usr/bin/env python3
+"""Classical simulation of a quantum NOT (Pauli-X) gate.
+
+The Pauli-X gate maps :math:`|0\rangle` to :math:`|1\rangle` and vice-versa.
+In this educational module we model qubits as classical bits (0 or 1).
+
+Reference:
+- https://en.wikipedia.org/wiki/Quantum_logic_gate#Pauli-X_gate
 """
-Build a simple bare-minimum quantum circuit that starts with a single
-qubit (by default, in state 0) and inverts it. Run the experiment 1000
-times and print the total count of the states finally observed.
-Qiskit Docs: https://qiskit.org/documentation/getting_started.html
-"""
 
-import qiskit
+from __future__ import annotations
 
 
-def single_qubit_measure(
-    qubits: int, classical_bits: int
-) -> qiskit.result.counts.Counts:
+def not_gate(qubit: int) -> int:
+    """Flip a single qubit represented as 0 or 1.
+
+    Time Complexity: ``O(1)``
+    Space Complexity: ``O(1)``
+
+    >>> not_gate(0)
+    1
+    >>> not_gate(1)
+    0
+    >>> not_gate(2)
+    Traceback (most recent call last):
+        ...
+    ValueError: qubit must be either 0 or 1
     """
-    >>> single_qubit_measure(2, 2)
-    {'11': 1000}
-    >>> single_qubit_measure(4, 4)
-    {'0011': 1000}
-    """
-    # Use Aer's simulator
-    simulator = qiskit.Aer.get_backend("aer_simulator")
-
-    # Create a Quantum Circuit acting on the q register
-    circuit = qiskit.QuantumCircuit(qubits, classical_bits)
-
-    # Apply X (NOT) Gate to Qubits 0 & 1
-    circuit.x(0)
-    circuit.x(1)
-
-    # Map the quantum measurement to the classical bits
-    circuit.measure([0, 1], [0, 1])
-
-    # Execute the circuit on the qasm simulator
-    job = qiskit.execute(circuit, simulator, shots=1000)
-
-    # Return the histogram data of the results of the experiment.
-    return job.result().get_counts(circuit)
+    if qubit not in (0, 1):
+        raise ValueError("qubit must be either 0 or 1")
+    return 1 - qubit
 
 
 if __name__ == "__main__":
-    counts = single_qubit_measure(2, 2)
-    print(f"Total count for various states are: {counts}")
+    import doctest
+
+    doctest.testmod()
